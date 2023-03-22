@@ -36,8 +36,8 @@ workflows:
     jobs:
       - build-1
       - build-2
-        - done:
-          requires:
-            - build-1
-            - build-2
+      - done:
+        requires:
+          - build-1
+          - build-2
 workflows: null
