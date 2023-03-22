@@ -17,7 +17,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: run test
+          name: npm run test
           command: |
             GO111MODULE=off go get github.com/mattn/goveralls
             go test -v -cover -race -coverprofile=coverage.out
