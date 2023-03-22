@@ -21,7 +21,7 @@ jobs:
           command: |
             GO111MODULE=off go get github.com/mattn/goveralls
             go test -v -cover -race -coverprofile=coverage.out
-            $GOPATH/bin/goveralls -coverprofile=/home/circleci/test/coverage.out -service=circle-ci -repotoken=$Kg0hg6KGINwldZlLmdOJIKycCC1kusQqh
+            $GOPATH/bin/goveralls -coverprofile=/home/circleci/test/coverage.out -service=circle-ci -repotoken=$COVERALLS_TOKEN
 
 
 
