@@ -1,33 +1,43 @@
 version: 2.1
-
-jobs:
-  build:
-    docker:
-      - image: circleci/golang:1.12
-    steps:
-      - checkout
-      - run:
-          name: run build
-          command: |
-            go build -v
-  test:
-    working_directory: ~/test
-    docker:
-      - image: circleci/golang:1.12
-    steps:
-      - checkout
-      - run:
-          name: npm run test
-          command: |
-            GO111MODULE=off go get github.com/mattn/goveralls
-            go test -v -cover -race -coverprofile=coverage.out
-            $GOPATH/bin/goveralls -coverprofile=/home/circleci/test/coverage.out -service=circle-ci -repotoken=$COVERALLS_REPO_TOKEN
-
-
-
-workflows:
-  version: 2.1
-  build_and_test:
-    jobs:
-      - build
-      - test
+orbs:
+  coveralls: coveralls/coveralls@1.0.6
+  jobs:
+    build-1:
+      build-2:
+        docker:
+          - image: 'circleci/node:10.0.0'
+        steps:
+          - checkout
+          - run:
+              command: npm install && make test-coverage-2
+              name: Install and Make 2
+          - coveralls/upload:
+              flag_name: job2
+              parallel: true
+      docker:
+        - image: 'circleci/node:10.0.0'
+          steps:
+            - checkout
+        - run:
+            command: npm install && make test-coverage-1
+            name: Install and Make 1
+        - coveralls/upload:
+            flag_name: job1
+            parallel: true
+      done:
+        docker:
+          - image: 'circleci/node:10.0.0'
+        steps:
+          - coveralls/upload:
+              carryforward: 'job1,job2'
+              parallel_finished: true
+    workflows:
+      test_parallel_then_upload:
+        jobs:
+          - build-1
+          - build-2
+          - done:
+              requires:
+                - build-1
+                - build-2
+workflows: null
